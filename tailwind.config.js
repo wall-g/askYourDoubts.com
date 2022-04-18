@@ -15,6 +15,11 @@ module.exports = {
         body:['Oxygen']
       }
     },
+    screens: {
+      'l': {'max': '1027px'},
+      'md': {'max': '911px'},
+      'sm': {'max': '476px'},
+    },
   },
   plugins: [],
 }
