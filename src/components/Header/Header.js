@@ -15,7 +15,7 @@ function Header({set}) {
         </div>
 
         <div className='right-header'>
-            <Link to="/login" className="bg-txt hover:bg-primary text-white py-2 px-5 rounded l:text-sm sm:text-xs">
+            <Link to="/auth" className="bg-txt hover:bg-primary text-white py-2 px-5 rounded l:text-sm sm:text-xs">
               Login
             </Link>
         </div>
