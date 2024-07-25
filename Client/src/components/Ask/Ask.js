@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { TagsInput } from 'react-tag-input-component'
 import { Editor } from '@tinymce/tinymce-react';
 import ques from '../../resources/ques.svg'
+import { LoginContext } from '../../contexts/loginContext';
 
 const ADD_QUESTION_URL = 'http://localhost:8000/ask';
 
@@ -15,12 +16,14 @@ const questionInitialValues = {
 
 function Ask() {
   const [question, setQuestion] = useState(questionInitialValues);
+  const {userName} = useContext(LoginContext);
 
   const handleQuestion = (e, fieldName) => {
     setQuestion({...question, [fieldName]: e});
   }
 
   const addQuestion = async () => {
+    question.userName = userName;
     try {
       await fetch(ADD_QUESTION_URL , {
         method: 'POST',

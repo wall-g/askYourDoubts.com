@@ -1,5 +1,6 @@
-import { React, useState } from 'react'
+import { React, useState, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { LoginContext } from '../../contexts/loginContext'
 
 const signupInitialValues = {
     username: '',
@@ -20,6 +21,7 @@ function Index({setIsAuthenticated}) {
     const [Signup, setSignup] = useState(signupInitialValues);
     const [Login, setLogin] = useState(loginInitialValues);
     const navigate = useNavigate();
+    const {setUserName} = useContext(LoginContext);
 
     const onInputChange = (e) => {
         setSignup({ ...Signup, [e.target.name]: e.target.value });
@@ -56,6 +58,7 @@ function Index({setIsAuthenticated}) {
             sessionStorage.setItem('accessToken', `Bearer ${json.accessToken}`);
             sessionStorage.setItem('refreshToken', `Bearer ${json.refreshToken}`)
             setIsAuthenticated(true);
+            setUserName(json.username);
             navigate('/');
         } catch (error) {
             console.log(error);
