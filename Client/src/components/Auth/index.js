@@ -45,14 +45,16 @@ function Index({setIsAuthenticated}) {
 
     const handleLogin = async () => {
         try {
-            await fetch(LOGIN_URL, {
+            const response = await fetch(LOGIN_URL, {
                 method: 'POST',
                 body: JSON.stringify(Login),
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
                 }
             });
-
+            const json = await response.json();
+            sessionStorage.setItem('accessToken', `Bearer ${json.accessToken}`);
+            sessionStorage.setItem('refreshToken', `Bearer ${json.refreshToken}`)
             setIsAuthenticated(true);
             navigate('/');
         } catch (error) {

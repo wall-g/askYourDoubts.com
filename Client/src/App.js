@@ -7,11 +7,10 @@ import Index2 from './components/Question/Index'
 import Ask from './components/Ask/Ask'
 import Auth from './components/Auth/index'
 
-const PrivateRoute = (({isAuthenticated}) => {
-  console.log(isAuthenticated);
+const PrivateRoute = (({set, isAuthenticated}) => {
   return isAuthenticated? 
   <>
-    <Header/>
+    <Header set={set} isAuthenticated={isAuthenticated}/>
     <Outlet/>
   </> :
     <Navigate replace to="/auth"/>
@@ -27,7 +26,7 @@ function App() {
     <div>
       <Routes>
         <Route exact path="/auth" element={<Auth setIsAuthenticated={setIsAuthenticated}/>}/>
-        <Route exact path="/" element={<PrivateRoute isAuthenticated={isAuthenticated}/>}>
+        <Route exact path="/" element={<PrivateRoute set={set} isAuthenticated={isAuthenticated}/>}>
             <Route exact path="/" element={<Index1 set={set} ShowMenu={ShowMenu}/>}/>
         </Route>
         <Route exact path="/add-question" element={<Ask/>}/>
