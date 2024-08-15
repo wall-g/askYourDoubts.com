@@ -12,8 +12,16 @@ const questionSchema = mongoose.Schema({
     tags: {
         type: [String],
         required: true
+    },
+    createdDate: {
+        type: String,
+        required: true,
+    },
+    userName: {
+        type: String,
+        required: true
     }
 })
 
-const Question = mongoose.model('question', questionSchema);
-export default Question;
+const question = mongoose.model('question', questionSchema);
+export default question;

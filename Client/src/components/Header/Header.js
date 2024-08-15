@@ -1,6 +1,14 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'
 function Header({ set, isAuthenticated }) {
+  const navigate = useNavigate();
+  const handleLogout  = () => {
+    sessionStorage.removeItem('accessToken');
+    sessionStorage.removeItem('refreshToken');
+    navigate('/auth')
+  }
+
   return (
     <div className="App bg-secondary shadow-md border-t-2 border-primary antialiased">
       <div className='h-16 flex py-4 max-w-7xl mx-auto px-2 justify-between'>
@@ -17,7 +25,7 @@ function Header({ set, isAuthenticated }) {
 
         <div className='right-header'>
           {
-            isAuthenticated ? <button className="bg-txt hover:bg-primary text-white py-2 px-5 rounded l:text-sm sm:text-xs">Logout</button> :
+            isAuthenticated ? <button onClick={() => handleLogout()} className="bg-txt hover:bg-primary text-white py-2 px-5 rounded l:text-sm sm:text-xs">Logout</button> :
               <Link to="/auth" className="bg-txt hover:bg-primary text-white py-2 px-5 rounded l:text-sm sm:text-xs">
                 Login
               </Link>

@@ -1,6 +1,8 @@
-import { React, useState, useContext } from 'react'
+import { React, useState, useContext, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { LoginContext } from '../../contexts/loginContext'
+import { SIGNUP_URL, LOGIN_URL } from '../../utils/constant'
+import { getAccessTocken } from '../../utils/common-utils'
 
 const signupInitialValues = {
     username: '',
@@ -13,15 +15,21 @@ const loginInitialValues = {
     password: ''
 }
 
-const SIGNUP_URL = 'http://localhost:8000/signup';
-const LOGIN_URL = 'http://localhost:8000/login';
-
-function Index({setIsAuthenticated}) {
+function Index({ setIsAuthenticated }) {
     const [Register, setRegister] = useState(false);
     const [Signup, setSignup] = useState(signupInitialValues);
     const [Login, setLogin] = useState(loginInitialValues);
     const navigate = useNavigate();
-    const {setUserName} = useContext(LoginContext);
+    const { setUserName } = useContext(LoginContext);
+    useEffect(() => {
+        const accessToken = getAccessTocken();
+        if(accessToken){
+            const userName = accessToken.split(' ')[1];
+            setIsAuthenticated(true);
+            setUserName(userName);
+            navigate('/');
+        }
+    }, [])
 
     const onInputChange = (e) => {
         setSignup({ ...Signup, [e.target.name]: e.target.value });
@@ -55,11 +63,13 @@ function Index({setIsAuthenticated}) {
                 }
             });
             const json = await response.json();
-            sessionStorage.setItem('accessToken', `Bearer ${json.accessToken}`);
-            sessionStorage.setItem('refreshToken', `Bearer ${json.refreshToken}`)
-            setIsAuthenticated(true);
-            setUserName(json.username);
-            navigate('/');
+            if (response.status === 200) {
+                sessionStorage.setItem('accessToken', `Bearer ${json.accessToken}`);
+                sessionStorage.setItem('refreshToken', `Bearer ${json.refreshToken}`)
+                setIsAuthenticated(true);
+                setUserName(json.username);
+                navigate('/');
+            }
         } catch (error) {
             console.log(error);
         }

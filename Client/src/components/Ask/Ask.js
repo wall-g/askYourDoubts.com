@@ -3,8 +3,9 @@ import { TagsInput } from 'react-tag-input-component'
 import { Editor } from '@tinymce/tinymce-react';
 import ques from '../../resources/ques.svg'
 import { LoginContext } from '../../contexts/loginContext';
-
-const ADD_QUESTION_URL = 'http://localhost:8000/ask';
+import { getAccessTocken } from '../../utils/common-utils';
+import { ADD_QUESTION_URL } from '../../utils/constant';
+import { useNavigate } from 'react-router-dom';
 
 const questionInitialValues = {
   title: '',
@@ -16,22 +17,25 @@ const questionInitialValues = {
 
 function Ask() {
   const [question, setQuestion] = useState(questionInitialValues);
-  const {userName} = useContext(LoginContext);
+  const { userName } = useContext(LoginContext);
+  const navigate = useNavigate();
 
   const handleQuestion = (e, fieldName) => {
-    setQuestion({...question, [fieldName]: e});
+    setQuestion({ ...question, [fieldName]: e });
   }
 
   const addQuestion = async () => {
     question.userName = userName;
     try {
-      await fetch(ADD_QUESTION_URL , {
+      await fetch(ADD_QUESTION_URL, {
         method: 'POST',
         body: JSON.stringify(question),
         headers: {
+          authorization: getAccessTocken(),
           'Content-type': 'application/json; charset=UTF-8',
         }
       })
+      navigate('/');
     } catch (error) {
       console.log(error);
     }
@@ -63,7 +67,7 @@ function Ask() {
               'bold italic | alignleft aligncenter ' +
               'alignright alignjustify' +
               'removeformat | image link | codesample',
-            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
           }}
           onEditorChange={(e) => handleQuestion(e, 'body')}
         />
