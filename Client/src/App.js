@@ -33,7 +33,7 @@ function App() {
           <Route exact path="/" element={<PrivateRoute set={set} isAuthenticated={isAuthenticated} />}>
             <Route exact path="/" element={<Index1 set={set} ShowMenu={ShowMenu} />} />
           </Route>
-          <Route path="/question" element={<Index2 set={set} ShowMenu={ShowMenu} />} />
+          <Route path="/question/:id" element={<Index2 set={set} ShowMenu={ShowMenu} />} />
         </Routes>
       </LoginContext.Provider>
     </div>

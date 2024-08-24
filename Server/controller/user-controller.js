@@ -10,6 +10,7 @@ export const signupUser = async (request, response) => {
     try {
         const hashedPassword = await bcrypt.hash(request.body.password, 10);
         const user = { username: request.body.username, email: request.body.email, password: hashedPassword };
+        console.log(user, 'user');
         const newUser = new User(user);
         await newUser.save();
         return response.status(200).json({ msg: "signup successfull" })
@@ -26,7 +27,7 @@ export const loginUser = async (request, response) => {
     try {
         let match = await bcrypt.compare(request.body.password, user.password);
         if (match) {
-            const accessToken = jwt.sign(user.toJSON(), process.env.ACCESS_SECRET_KEY, { expiresIn: '15m' });
+            const accessToken = jwt.sign(user.toJSON(), process.env.ACCESS_SECRET_KEY, { expiresIn: '100m' });
             const refreshToken = jwt.sign(user.toJSON(), process.env.REFRESH_SECRET_KEY);
             const newToken = new Token({ token: refreshToken });
             await newToken.save();

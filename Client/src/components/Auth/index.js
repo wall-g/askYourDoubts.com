@@ -24,7 +24,7 @@ function Index({ setIsAuthenticated }) {
     useEffect(() => {
         const accessToken = getAccessTocken();
         if(accessToken){
-            const userName = accessToken.split(' ')[1];
+            const userName = JSON.parse(atob(accessToken.split(' ')[1].split('.')[1])).username;
             setIsAuthenticated(true);
             setUserName(userName);
             navigate('/');
