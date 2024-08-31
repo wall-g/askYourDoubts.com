@@ -61,7 +61,7 @@ function Question() {
 
   useEffect(() => {
     const getComments = async () => {
-      const GET_COMMENTS_URL = `http://localhost:8000/comments/${id}`
+      const GET_COMMENTS_URL = `https://community-for-programmers.onrender.com/comments/${id}`
       const response = await fetch(GET_COMMENTS_URL, {
         headers: {
           authorization: getAccessTocken(),
@@ -93,7 +93,7 @@ function Question() {
 
   useEffect(() => {
     const getAnswers = async () => {
-      const GET_ANSWERS_URL = `http://localhost:8000/answers/${id}`
+      const GET_ANSWERS_URL = `https://community-for-programmers.onrender.com/answers/${id}`
       const response = await fetch(GET_ANSWERS_URL, {
         headers: {
           authorization: getAccessTocken(),
@@ -108,7 +108,7 @@ function Question() {
 
   useEffect(() => {
     const getPostDetails = async () => {
-      const GET_POST_URL = `http://localhost:8000/post/${id}`
+      const GET_POST_URL = `https://community-for-programmers.onrender.com/post/${id}`
       const response = await fetch(GET_POST_URL, {
         headers: {
           authorization: getAccessTocken(),
