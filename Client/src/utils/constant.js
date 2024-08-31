@@ -4,3 +4,6 @@ export const ADD_QUESTION_URL = 'https://community-for-programmers.onrender.com/
 export const FETCH_POSTS_URL = 'https://community-for-programmers.onrender.com/posts';
 export const ADD_COMMENT_URL = 'https://community-for-programmers.onrender.com/addComment';
 export const ADD_ANSWER_URL = 'https://community-for-programmers.onrender.com/addAnswer';
+export const GET_COMMENTS = `https://community-for-programmers.onrender.com/comments/`;
+export const GET_ANSWERS = `https://community-for-programmers.onrender.com/answers/`;
+export const GET_POST_DETAILS = `https://community-for-programmers.onrender.com/post/`

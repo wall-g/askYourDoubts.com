@@ -1,13 +1,14 @@
-import React, { useState, useRef, useEffect } from 'react'
-import { Link, useParams } from "react-router-dom";
+import React, { useState, useRef } from 'react'
+import { Link } from "react-router-dom";
 import { Editor } from '@tinymce/tinymce-react';
-import { getAccessTocken } from '../../utils/common-utils';
 import ReactHtmlParser from 'html-react-parser'
-import Comment from '../Comment/Comment';
-import Answer from '../Answer/Answer';
-import { ADD_COMMENT_URL } from '../../utils/constant';
-import { ADD_ANSWER_URL } from '../../utils/constant';
-import { getUserName } from '../../utils/common-utils';
+import { ADD_COMMENT_URL } from '../utils/constant';
+import { ADD_ANSWER_URL } from '../utils/constant';
+import { getAccessTocken } from '../utils/common-utils';
+import Answer from './Answer';
+import Comment from './Comment';
+import { getUserName } from '../utils/common-utils';
+import { useParams } from 'react-router-dom';
 
 const commentInitialValues = {
   userName: '',
@@ -23,16 +24,13 @@ const answerInitialValues = {
   date: new Date()
 }
 
-function Question() {
-  const [post, setPost] = useState('');
-  const [trigger, setTrigger] = useState(false);
+function Question({answers, comments, post, setTrigger}) {
   const [comment, setComment] = useState(commentInitialValues);
   const [answer, setAnswer] = useState(answerInitialValues);
-  const [comments, setComments] = useState([]);
-  const [answers, setAnswers] = useState([]);
   const editorRef = useRef(null);
-  const { id } = useParams();
+  const inputRef = useRef(null);
   const userName = getUserName();
+  const { id } = useParams();
 
   const handleCommentInput = (e) => {
     setComment({ ...comment, userName: userName, comment: e.target.value, postId: id })
@@ -53,26 +51,11 @@ function Question() {
         }
       })
       setComment(commentInitialValues);
-      setTrigger(!trigger);
+      setTrigger(true);
     } catch (error) {
       console.log(error);
     }
   }
-
-  useEffect(() => {
-    const getComments = async () => {
-      const GET_COMMENTS_URL = `https://community-for-programmers.onrender.com/comments/${id}`
-      const response = await fetch(GET_COMMENTS_URL, {
-        headers: {
-          authorization: getAccessTocken(),
-          'Content-type': 'application/json; charset=UTF-8',
-        }
-      });
-      const json = await response.json();
-      setComments(json);
-    }
-    getComments();
-  }, [id, trigger])
 
   const addAnswer = async () => {
     try {
@@ -85,41 +68,12 @@ function Question() {
         }
       })
       setAnswer(answerInitialValues);
-      setTrigger(!trigger);
+      editorRef?.current?.setContent('');
+      setTrigger(true);
     } catch (error) {
       console.log(error);
     }
   }
-
-  useEffect(() => {
-    const getAnswers = async () => {
-      const GET_ANSWERS_URL = `https://community-for-programmers.onrender.com/answers/${id}`
-      const response = await fetch(GET_ANSWERS_URL, {
-        headers: {
-          authorization: getAccessTocken(),
-          'Content-type': 'application/json; charset=UTF-8',
-        }
-      });
-      const json = await response.json();
-      setAnswers(json);
-    }
-    getAnswers();
-  }, [id, trigger])
-
-  useEffect(() => {
-    const getPostDetails = async () => {
-      const GET_POST_URL = `https://community-for-programmers.onrender.com/post/${id}`
-      const response = await fetch(GET_POST_URL, {
-        headers: {
-          authorization: getAccessTocken(),
-          'Content-type': 'application/json; charset=UTF-8',
-        }
-      });
-      const json = await response.json();
-      setPost(json);
-    }
-    getPostDetails();
-  }, [])
 
   return post ? (
     <div className='col-span-6 ml-6 font-body md:col-span-7 md:ml-0 md:relative md:z-0'>
@@ -148,11 +102,11 @@ function Question() {
           <div className='l:text-xs mt-2 text-txt text-sm tracking-wide'>
             {ReactHtmlParser(post.body)}
           </div>
-          <div className='grid grid-cols-2 mt-2'>
+          <div className='min-md:grid min-md:grid-cols-2 mt-2'>
             <div>
               {post.tags.map((tag, idx) => <button key={idx} className="l:px-1  bg-blue-200 text-blue-800  px-3 py-1 rounded text-xs mr-2">{tag}</button>)}
             </div>
-            <div className='justify-self-end text-xs flex'>
+            <div className='justify-self-end text-xs flex md:mt-8'>
               <p className='text-blue-800 bg-blue-100 rounded px-2 py-2'><i className="fa fa-user"></i> {post.userName} </p>
               <span className='text-gry px-2 py-2'> {new Date(post.createdDate).toDateString()} </span>
             </div>
@@ -160,9 +114,18 @@ function Question() {
 
           <div>
             <div className='bg-secondary py-2 px-2 border-slate-300 border-2 mt-8 mb-8'>
-              <input value={comment.comment} onChange={(e) => handleCommentInput(e)} className="appearance-none block w-full bg-white text-gray-700 border border-gray-200 rounded py-3 px-2 text-sm 
-              leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="sentence" placeholder="Add a comment..."></input>
-              <button onClick={() => addComment()} className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-1  text-xs mt-3">Add a comment</button>
+              <input value={comment.comment}
+                onChange={(e) => handleCommentInput(e)}
+                className="appearance-none block w-full bg-white text-gray-700 border border-gray-200 rounded py-3 px-2 text-sm leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                type="sentence"
+                placeholder="Add a comment..."
+                ref={inputRef}>
+              </input>
+              <button
+                onClick={() => addComment()}
+                className={`bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 text-xs mt-3 ${!inputRef?.current?.value ? 'bg-gray-400' : ''}`}
+                disabled={!inputRef?.current?.value}>Add a comment
+              </button>
               {comments && comments.map((comment) => <Comment key={comment._id} comment={comment} />)}
             </div>
           </div>
@@ -181,9 +144,6 @@ function Question() {
             height: 300,
             menubar: false,
             plugins: [
-              'advlist autolink lists link image charmap print preview anchor',
-              'searchreplace visualblocks code fullscreen',
-              'insertdatetime media table paste code help wordcount',
               'image', 'link', 'codesample'
             ],
             toolbar: 'undo redo | formatselect | ' +
@@ -194,7 +154,7 @@ function Question() {
           }}
           onEditorChange={(e) => handleAnswer(e)}
         />
-        <button onClick={() => addAnswer()} className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-2 rounded mt-4 mb-6 text-sm">
+        <button onClick={() => addAnswer()} className={`bg-blue-500 text-white py-2 px-2 rounded mt-4 mb-6 text-sm ${!editorRef?.current?.getContent() ? 'bg-gray-400' : 'hover:bg-blue-700'}`} disabled={!editorRef?.current?.getContent()}>
           Post your answer
         </button>
       </div>

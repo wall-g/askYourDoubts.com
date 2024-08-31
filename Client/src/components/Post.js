@@ -19,7 +19,7 @@ function Post({ post }) {
                         {post.tags.map((tag, idx) => <button key={idx} className="l:px-1  bg-blue-200 text-blue-800  px-3 py-1 rounded text-xs mr-2">{tag}</button>)}
                     </div>
                     <div className='justify-self-end text-xs text-blue-800 md:mt-2'>
-                        <p><i className="fa fa-user text-sm"></i> {post.userName} <span className='text-gry'> {new Date(post.createdDate).toLocaleDateString()} </span></p>
+                        <p><i className="fa fa-user text-sm"></i> {post.userName} <span className='text-gry ml-2'> {new Date(post.createdDate).toLocaleDateString()} </span></p>
                     </div>
                 </div>
 

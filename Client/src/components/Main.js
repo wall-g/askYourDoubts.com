@@ -1,25 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { Link } from "react-router-dom";
-import Post from '../Post/Post';
-import { FETCH_POSTS_URL } from '../../utils/constant';
-import { getAccessTocken } from '../../utils/common-utils';
+import Post from './Post';
 
-function Main() {
-  const [posts, setPosts] = useState([]);
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch(FETCH_POSTS_URL, {
-        headers: {
-          authorization: getAccessTocken(),
-          'Content-type': 'application/json; charset=UTF-8',
-        }
-      });
-      const json = await response.json();
-      setPosts(json);
-    }
-    fetchData();
-  }, [])
-
+function Main({ posts }) {
   return (
     <div className='col-span-6 ml-6 font-body md:col-span-7 md:ml-0 md:relative md:z-0'>
       <div className='flex justify-between'>
