@@ -1,11 +1,11 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useRef } from 'react'
 import { TagsInput } from 'react-tag-input-component'
 import { Editor } from '@tinymce/tinymce-react';
-import ques from '../../resources/ques.svg'
-import { LoginContext } from '../../contexts/loginContext';
-import { getAccessTocken } from '../../utils/common-utils';
-import { ADD_QUESTION_URL } from '../../utils/constant';
+import ques from '../resources/ques.svg'
+import { getAccessTocken } from '../utils/common-utils';
+import { ADD_QUESTION_URL } from '../utils/constant';
 import { useNavigate } from 'react-router-dom';
+import { getUserName } from '../utils/common-utils';
 
 const questionInitialValues = {
   title: '',
@@ -17,8 +17,14 @@ const questionInitialValues = {
 
 function Ask() {
   const [question, setQuestion] = useState(questionInitialValues);
-  const { userName } = useContext(LoginContext);
   const navigate = useNavigate();
+  const editorRef = useRef(null);
+  const titleRef = useRef(null);
+  const userName = getUserName();
+
+  const isFormValid = () => {
+    return editorRef?.current?.getContent() && titleRef?.current?.value;
+  }
 
   const handleQuestion = (e, fieldName) => {
     setQuestion({ ...question, [fieldName]: e });
@@ -49,18 +55,16 @@ function Ask() {
         <h3 className='text-sm font-semibold'>Title</h3>
         <p className='text-xs text-gry mt-1 mb-1'>Be specific and imagine you're asking a question to another person</p>
         <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-1 px-2 text-sm mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-          type="sentence" placeholder="e.g. Is there an R function for finding the index of an element in a vector?" onChange={(e) => handleQuestion(e.target.value, 'title')}></input>
+          type="sentence" placeholder="e.g. Is there an R function for finding the index of an element in a vector?" onChange={(e) => handleQuestion(e.target.value, 'title')} ref={titleRef}></input>
         <h3 className='text-sm font-semibold mt-4'>Body</h3>
         <p className='text-xs text-gry mt-1 mb-1'>Include all the information someone would need to answer your question</p>
         <Editor
           apiKey='ewyywh62rqgkqrt4x7t0h4qg2cwru4o4yz3g63xiw8zk9cux'
+          onInit={(evt, editor) => editorRef.current = editor}
           init={{
             height: 300,
             menubar: false,
             plugins: [
-              'advlist autolink lists link image charmap print preview anchor',
-              'searchreplace visualblocks code fullscreen',
-              'insertdatetime media table paste code help wordcount',
               'image', 'link', 'codesample'
             ],
             toolbar: 'undo redo | formatselect | ' +
@@ -73,9 +77,9 @@ function Ask() {
         />
         <h3 className='text-sm font-semibold mt-4'>Tags</h3>
         <p className='text-xs text-gry mt-1 mb-1'>Add up to 5 tags to describe what your question is about</p>
-        <TagsInput name='tags' placeHolder='e.g. (asp.net ruby-on-rails vb)' onChange={(e) => handleQuestion(e, 'tags')} />
+        <TagsInput name='tags' placeHolder='e.g. (asp.net ruby-on-rails vb)' onChange={(e) => handleQuestion(e, 'tags')}/>
       </div>
-      <button className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-2 rounded mt-4 mb-6 text-sm" onClick={() => addQuestion()}>
+      <button className={`bg-blue-500 text-white py-2 px-2 rounded mt-4 mb-6 text-sm ${!isFormValid()? 'bg-gray-400': 'hover:bg-blue-700'}`} onClick={() => addQuestion()} disabled={!isFormValid()}>
         Add your question
       </button>
     </div>

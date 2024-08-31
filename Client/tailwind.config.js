@@ -19,6 +19,10 @@ module.exports = {
       'l': {'max': '1027px'},
       'md': {'max': '911px'},
       'sm': {'max': '476px'},
+      'min-l': {'min': '1027px'},
+      'min-md': {'min': '911px'},
+      'min-sm': {'min': '476px'},
+
     },
   },
   plugins: [],

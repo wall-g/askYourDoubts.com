@@ -9,9 +9,9 @@ const Answer = ({answer}) => {
             </div>
 
             <div className='ml-3 w-full'>
-                <p className='l:text-xs mt-2 text-txt text-sm tracking-wide'>
+                <div className='l:text-xs mt-2 text-txt text-sm tracking-wide'>
                     {ReactHtmlParser(answer.answer)}
-                </p>
+                </div>
                 <div className='text-xs text-blue-800 mt-8 text-right'>
                     <i className="fa fa-user text-sm"></i> {answer.userName} <span className='text-gry'> {new Date(answer.date).toLocaleDateString()} </span>
                 </div>

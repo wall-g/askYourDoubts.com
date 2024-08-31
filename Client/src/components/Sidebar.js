@@ -1,9 +1,12 @@
-import {React} from 'react'
-function Sidebar({set, ShowMenu}) {
+import {React, useContext} from 'react'
+import { SidebarContext } from '../contexts/sidebarContext';
+
+function Sidebar() {
+    const {showMenu, setShowMenu} = useContext(SidebarContext);
     let Style = `l:text-xs text-sm border-r-2 border-slate-300 md:absolute md:z-10
     md:bg-white md:p-5 md:text-sm md:h-screen md:w-64 md:top-0 md:left-0 md:flex
     md:justify-between md:inset-0 md:transform md:duration-200`;
-    if(ShowMenu){
+    if(showMenu){
         Style += ' md:translate-x-0 md:ease-in md:opacity-100';
     }else{
         Style += ' md:-translate-x-full md:ease-out md:opacity-0';
@@ -30,7 +33,7 @@ function Sidebar({set, ShowMenu}) {
                 <li className='mt-1'>Companies</li>
             </ul>
         </div>
-        <button className='hidden md:inline-flex' onClick={()=>set()}>
+        <button className='hidden md:inline-flex' onClick={()=>setShowMenu(!showMenu)}>
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
