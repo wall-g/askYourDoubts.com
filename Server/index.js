@@ -14,10 +14,10 @@ app.use(bodyParser.json({extended: true}));
 app.use(bodyParser.urlencoded({extended: true}));
 
 app.use('/', Router);
-const PORT = 8000;
+const PORT = process.env.PORT || 8000;
 
 app.listen(PORT, () => {
     console.log(`server is running on ${PORT}`)
 })
 
-Connection(process.env.USERNAME, process.env.PASSWORD);
+Connection(process.env.MONGODB_URL);
